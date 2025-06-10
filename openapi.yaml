@@ -1,0 +1,82 @@
+openapi: 3.0.3
+info:
+  title: Acme Coffee Store Inventory API
+  version: 1.0.0
+  description: REST API for listing coffee beans inventory at Acme Coffee Store.
+servers:
+  - url: https://acme-coffee.onrender.com/beans
+    description: Render deployment
+  - url: http://localhost:3000
+    description: Local server
+paths:
+  /beans:
+    get:
+      summary: List all coffee beans
+      description: Returns a list of all coffee beans in inventory.
+      responses:
+        '200':
+          description: A JSON array of coffee beans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bean'
+    post:
+      summary: Add a new coffee bean
+      description: Adds a new coffee bean to the inventory.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bean'
+      responses:
+        '201':
+          description: Coffee bean created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bean'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /:
+    get:
+      summary: API root
+      description: Returns a welcome message.
+      responses:
+        '200':
+          description: Welcome message
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  schemas:
+    Bean:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Ethiopian Yirgacheffe
+        roast:
+          type: string
+          example: Light
+        stock:
+          type: integer
+          example: 25
+      required:
+        - id
+        - name
+        - roast
+        - stock
