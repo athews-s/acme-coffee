@@ -1,0 +1,147 @@
+openapi: 3.0.3
+info:
+  title: ACME Coffee Roaster Ecommerce API
+  version: 1.0.0
+  description: REST API for coffee products and orders.
+servers:
+  - url: http://localhost:3000
+    description: Local server
+paths:
+  /products:
+    get:
+      summary: List all coffee products
+      responses:
+        '200':
+          description: A JSON array of coffee products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+  /products/{id}:
+    get:
+      summary: Get a single coffee product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Coffee product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /orders:
+    get:
+      summary: List all orders
+      responses:
+        '200':
+          description: A JSON array of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+    post:
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: integer
+                quantity:
+                  type: integer
+              required:
+                - productId
+                - quantity
+      responses:
+        '201':
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Invalid input or not enough stock
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Ethiopian Yirgacheffe
+        roast:
+          type: string
+          example: Light
+        price:
+          type: number
+          format: float
+          example: 18.99
+        stock:
+          type: integer
+          example: 25
+      required:
+        - id
+        - name
+        - roast
+        - price
+        - stock
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        productId:
+          type: integer
+          example: 1
+        quantity:
+          type: integer
+          example: 2
+        total:
+          type: number
+          format: float
+          example: 37.98
+      required:
+        - id
+        - productId
+        - quantity
+        - total
